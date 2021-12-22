@@ -17,12 +17,12 @@
 1. **_Clone the repository_**
 
 ```sh
-git clone git@github.com:Heba-Elbeshbeshy/Network.git
+git clone git@github.com:Heba-Elbeshbeshy/Insulin-Prediction-Application.git
 ```
 2. **_Navigate to repository directory_**
 
 ```sh
-$ cd Network
+$ cd Insulin-Prediction-Application
 ```
 3. **_Install dependencies_**
 

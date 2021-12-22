@@ -85,18 +85,25 @@ class Client:
     def receive(self):
         while self.running :
             try:
+                #client.settimeout(10.0)
                 msg = self.sock.recv(1024).decode(FORMAT)
                 if msg == 'USERNAME':
                     self.sock.send(self.userName.encode(FORMAT))
                     
-                else:
+                elif msg !='':
                     if self.gui_done:
                         self.NUM_Q +=1
                         if self.NUM_Q == len(self.Question) - 1:
                             self.Update_GUI(msg)
                         elif self.NUM_Q < len(self.Question) - 1:
                             self.Update_GUI(msg)
-
+                else:
+                    msg = 'DISCONNECTED'
+                    print('connection is closed')
+                    self.sock.send(msg.encode(FORMAT))
+                    self.sock.close()
+                    self.win.destroy()
+                    exit(0)
             except ConnectionAbortedError:
                 break
             except:

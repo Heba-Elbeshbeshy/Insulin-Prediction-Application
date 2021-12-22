@@ -1,6 +1,7 @@
 import socket
 from sys import argv
 import threading
+from numpy.core.fromnumeric import ptp
 import pandas as pd
 import numpy as np
 from sklearn.naive_bayes import GaussianNB
@@ -58,6 +59,8 @@ def broadcast(msg, client):
 def handle(client):
     while True:
         try:
+            client.settimeout(5.0)
+            
             msg = client.recv(1024)
             for word in msg.split():
                 if word.isdigit():
@@ -68,10 +71,10 @@ def handle(client):
                 broadcast(msg, client)
                 msg = model(answers[clients.index(client)])
                 broadcast(msg.encode(FORMAT), client)
-            else:
+            elif len(answers[clients.index(client)]) <= 6:
                 broadcast(msg, client)
-
         except: ## if we get error
+            
             index = clients.index(client)
             clients.remove(client)
             client.close() # close the connection with these dropped client
@@ -94,11 +97,11 @@ def receive(clients):
 
         userNames.append(userName)
         clients.append(client)
-
+        
         thread = threading.Thread(target=handle , args=(client, ))
         thread.start()
-        print("Server Running")
-
+        
+print("Server Running")
 receive(clients) 
 
 
