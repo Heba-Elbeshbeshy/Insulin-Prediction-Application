@@ -41,7 +41,7 @@ $ python server.py
 ```sh
 $ python client.py 
 ```
-NOTE : In differnet Command prompt / Terminal
+> NOTE : In two differnet Command prompt / Terminal
 
 
 
