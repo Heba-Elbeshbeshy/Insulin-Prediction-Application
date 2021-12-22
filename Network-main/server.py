@@ -56,7 +56,7 @@ def handle(client):
     while True:
         try:
             msg = client.recv(1024)
-            print("Ahmed:", clients.index(client))
+            print("Client:", clients.index(client))
             print(f"{userNames[clients.index(client)]} says {msg}")
             for word in msg.split():
                 if word.isdigit():
