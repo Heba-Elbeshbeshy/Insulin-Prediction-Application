@@ -29,7 +29,7 @@ def broadcast(msg, client):
 
 
 def model(client):
-    diabetes_data = pd.read_csv('diabetes.csv')
+    diabetes_data = pd.read_csv('/home/maryem/Network/Network-main/diabetes.csv')
 
     x=diabetes_data.drop(["Outcome"],axis = 1)
 
@@ -70,6 +70,7 @@ def handle(client):
                 # answers.remove(answers[clients.index(client)])
                 print(msg)
                 broadcast(msg.encode(FORMAT), client)
+                broadcast("Done",client)
             else:
                 broadcast(msg, client)
 
@@ -98,8 +99,8 @@ def receive(clients):
         client.send("connected to the server".encode(FORMAT))
         thread = threading.Thread(target=handle , args=(client, ))
         thread.start()
+        if answers[0]:
+            answers[0]=[]
         print("Server Running")
 
 receive(clients) 
-
-

@@ -19,7 +19,7 @@ class Client:
 
         self.NUM_Q = 0
         self.Question = ["YOUR AGE:", "YOUR Glucose Level:", "YOUR BloodPressure:", "YOUR Insulin Level:", "YOUR BMI:", "YOUR Pregnancies time:", "", ""]
-
+        #self.msg=''
         # Starting Window
         msg = tkinter.Tk()
         msg.withdraw()
@@ -83,10 +83,11 @@ class Client:
         exit(0)
 
     def receive(self):
+
         while self.running :
             try:
-                msg = self.sock.recv(1024).decode(FORMAT)
-                if msg == 'USERNAME':
+                self.msg = self.sock.recv(1024).decode(FORMAT)
+                if self.msg == 'USERNAME':
                     self.sock.send(self.userName.encode(FORMAT))
                     
                 else:
@@ -96,7 +97,9 @@ class Client:
                         if self.NUM_Q > len(self.Question):
                             self.NUM_Q = 0
                         else:
-                            self.Update_GUI(msg)
+                            self.Update_GUI(self.msg)
+                    if self.msg =='Done':
+                        self.sock.close()
 
             except ConnectionAbortedError:
                 break
@@ -105,6 +108,7 @@ class Client:
                 self.sock.close()
                 exit(0)
                 break
+        
 
     def Update_GUI(self, msg):
         self.text_area.config(state='normal')
