@@ -18,8 +18,8 @@ class Client:
         self.sock.connect((ip, port))
 
         self.NUM_Q = 0
-        self.Question = ["YOUR AGE:", "YOUR Glucose Level:", "YOUR BloodPressure:", "YOUR Insulin Level:", "YOUR BMI:", "YOUR Pregnancies time:", "", ""]
-        #self.msg=''
+        self.Question = ["YOUR AGE:", "YOUR NAME:", "YOUR GENDER:"]
+
         # Starting Window
         msg = tkinter.Tk()
         msg.withdraw()
@@ -83,23 +83,19 @@ class Client:
         exit(0)
 
     def receive(self):
-
         while self.running :
             try:
-                self.msg = self.sock.recv(1024).decode(FORMAT)
-                if self.msg == 'USERNAME':
+                msg = self.sock.recv(1024).decode(FORMAT)
+                if msg == 'USERNAME':
                     self.sock.send(self.userName.encode(FORMAT))
                     
                 else:
                     if self.gui_done:
                         print("True")
                         self.NUM_Q +=1
-                        if self.NUM_Q > len(self.Question):
+                        if self.NUM_Q >= len(self.Question):
                             self.NUM_Q = 0
-                        else:
-                            self.Update_GUI(self.msg)
-                    if self.msg =='Done':
-                        self.sock.close()
+                        self.Update_GUI(msg)
 
             except ConnectionAbortedError:
                 break
@@ -108,11 +104,10 @@ class Client:
                 self.sock.close()
                 exit(0)
                 break
-        
 
     def Update_GUI(self, msg):
         self.text_area.config(state='normal')
-        self.text_area.insert('end', msg, "center",  '\n' + self.Question[self.NUM_Q] + '\n')
+        self.text_area.insert('end', msg, "center", self.Question[self.NUM_Q] + '\n')
         self.text_area.yview('end')
         self.text_area.config(state='disabled')    
 

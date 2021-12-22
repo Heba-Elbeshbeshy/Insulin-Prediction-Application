@@ -1,18 +1,12 @@
 import socket
 from sys import argv
 import threading
-import pandas as pd
-import numpy as np
-from sklearn.naive_bayes import GaussianNB
-from sklearn.model_selection import train_test_split
-
 
 ##CONSTANTS for TCP connection Stream
 # IP = socket.gethostbyname(socket.gethostname())
 IP="127.0.0.1"
 PORT = 7070 #Port to listen on 
 FORMAT = 'utf-8'
-number = 0
 
 server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
@@ -21,63 +15,21 @@ server.listen()
 
 clients=[]
 userNames =[]
-answers =[[]]
 
 #Broadcast fun that sends a messge to all connected devices 
 def broadcast(msg, client):
     client.send(msg) # send Decoded msg for any new client
-
-
-def model(client):
-    diabetes_data = pd.read_csv('/home/maryem/Network/Network-main/diabetes.csv')
-
-    x=diabetes_data.drop(["Outcome"],axis = 1)
-
-    y=diabetes_data['Outcome']
-
-    X_train,X_test,y_train,y_test = train_test_split(x,y,test_size=0.2,random_state=42)
-
-    classifer = GaussianNB()
-
-    fitted_data = classifer.fit(X_train,y_train)
-
-    prediction=classifer.predict(answers)
-
-    if prediction[0] == 0:
-        return 'You are not a diabtic'
-    else:
-        return 'You probably a diabtic, consult a doctor ASAP'
-
 
 # Handle every induvudual connection to the client
 def handle(client):
     while True:
         try:
             msg = client.recv(1024)
-            print(clients.index(client))
             print(f"{userNames[clients.index(client)]} says {msg}")
-            for word in msg.split():
-                if word.isdigit():
-                    answers[clients.index(client)].append(int(word))
-                    print(answers)
-                    print(clients.index(client))
-                    print(len(answers[clients.index(client)]))
-           
-            if len(answers[clients.index(client)]) % 6 == 0:
-                print(msg)
-                broadcast(msg, client)
-                msg = model(answers)
-                # answers.remove(answers[clients.index(client)])
-                print(msg)
-                broadcast(msg.encode(FORMAT), client)
-                broadcast("Done",client)
-            else:
-                broadcast(msg, client)
-
+            broadcast(msg, client)
         except: ## if we get error
             index = clients.index(client)
             clients.remove(client)
-            # answers.remove(answers[index])
             client.close() # close the connection with these dropped client
             userName= userNames[index]
             userNames.remove(userName)
@@ -96,11 +48,12 @@ def receive(clients):
         userNames.append(userName)
         clients.append(client)
         print(f"Username is {userName}")
+       
         client.send("connected to the server".encode(FORMAT))
         thread = threading.Thread(target=handle , args=(client, ))
         thread.start()
-        if answers[0]:
-            answers[0]=[]
         print("Server Running")
 
 receive(clients) 
+
+
