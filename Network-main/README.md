@@ -1,4 +1,4 @@
-# FIFA-Search Browser
+# Insulin Prediction Application
 
 ## About The Project
 > Medical Chatbot to predict if the user is diabetic or not by ML Model that takes **"Age, Glucose Level, BloodPressure, Insulin Level, BMI and Pregnancies time"**
