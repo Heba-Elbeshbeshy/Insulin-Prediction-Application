@@ -18,7 +18,7 @@ class Client:
         self.sock.connect((ip, port))
 
         self.NUM_Q = 0
-        self.Question = ["YOUR AGE:", "YOUR NAME:", "YOUR GENDER:"]
+        self.Question = ["YOUR AGE:", "YOUR Glucose Level:", "YOUR BloodPressure:", "YOUR Insulin Level:", "YOUR BMI:", "YOUR Pregnancies time:", "", ""]
 
         # Starting Window
         msg = tkinter.Tk()
@@ -93,9 +93,11 @@ class Client:
                     if self.gui_done:
                         print("True")
                         self.NUM_Q +=1
-                        if self.NUM_Q >= len(self.Question):
-                            self.NUM_Q = 0
-                        self.Update_GUI(msg)
+                        if self.NUM_Q == len(self.Question) - 1:
+                            print("Diagnosis: ",msg)
+                            self.Update_GUI(msg)
+                        elif self.NUM_Q < len(self.Question) - 1:
+                            self.Update_GUI(msg)
 
             except ConnectionAbortedError:
                 break
@@ -107,7 +109,7 @@ class Client:
 
     def Update_GUI(self, msg):
         self.text_area.config(state='normal')
-        self.text_area.insert('end', msg, "center", self.Question[self.NUM_Q] + '\n')
+        self.text_area.insert('end', msg, "center",  '\n' + self.Question[self.NUM_Q] + '\n')
         self.text_area.yview('end')
         self.text_area.config(state='disabled')    
 
