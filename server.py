@@ -59,8 +59,7 @@ def broadcast(msg, client):
 def handle(client):
     while True:
         try:
-            client.settimeout(5.0)
-            
+            client.settimeout(20.0)  
             msg = client.recv(1024)
             for word in msg.split():
                 if word.isdigit():
